@@ -7,7 +7,7 @@ import {fetchUser} from "@/lib/actions/user.actions";
 
 export default async function Home() {
     const user = await currentUser();
-    if(!user) redirect("/");
+    if(!user) redirect("/sign-in");
 
     const userInfo = fetchUser(user.id);
     if(!userInfo) redirect("/onboarding");

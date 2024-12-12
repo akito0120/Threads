@@ -6,6 +6,7 @@ import {redirect} from "next/navigation";
 
 export default async function Page() {
     const user = await currentUser();
+    if(!user) redirect("/sign-in");
 
     let userInfo = null;
 
@@ -17,12 +18,12 @@ export default async function Page() {
     }
 
     const userData = {
-        id: user?.id,
-        objectId: userInfo?._id,
-        username: userInfo?.username || user?.username,
+        id: user?.id || "",
+        objectId: userInfo?._id || "",
+        username: userInfo?.username || user?.username || "",
         name: userInfo?.name || user?.username || "",
         bio: userInfo?.bio || "",
-        image: userInfo?.image || user?.imageUrl
+        image: userInfo?.image || user?.imageUrl || ""
     };
 
     return (
