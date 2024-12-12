@@ -4,6 +4,7 @@ import {connectToDB} from "@/lib/mongoose";
 import Thread from "@/lib/models/thread.model";
 import User from "@/lib/models/user.model";
 import {revalidatePath} from "next/cache";
+import Community from "@/lib/models/community.model";
 
 interface Params {
     text: string,
@@ -20,7 +21,7 @@ export async function createThread({text, author, communityId, path}: Params) {
         const createdThread = await Thread.create({
             text,
             author,
-            communityId: null
+            communityId: communityId
         });
 
         await User.findByIdAndUpdate(author, {
@@ -45,6 +46,10 @@ export async function fetchPosts(pageNumber = 1, pageSize=  20) {
             .skip(skipAmount)
             .limit(pageSize)
             .populate({ path: "author", model: User})
+            .populate({
+                path: "community",
+                model: Community
+            })
             .populate({
                 path: "children",
                 populate: {

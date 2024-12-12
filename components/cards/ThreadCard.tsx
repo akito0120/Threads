@@ -1,31 +1,7 @@
 
-// interface Props {
-//     key: string,
-//     id: string,
-//     currentUserId: string,
-//     parentId: string | null,
-//     content: string,
-//     createdAt: string,
-//     community: {
-//         id: string,
-//         image: string,
-//         name: string
-//     } | null,
-//     author: {
-//         name: string,
-//         image: string,
-//         id: string
-//     },
-//     comments: {
-//         author: {
-//             image: string
-//         }
-//     }[],
-//     isComment?: boolean
-// }
-
 import Link from "next/link";
 import Image from "next/image";
+import {formatDateString} from "@/lib/utils";
 
 interface Props {
     id: string;
@@ -51,7 +27,7 @@ interface Props {
     isComment?: boolean;
 }
 
-export default function ThreadCard({id, currentUserId, parentId, content, createdAt, comments, author, isComment}: Props) {
+export default function ThreadCard({id, currentUserId, parentId, content, createdAt, comments, author, isComment, community}: Props) {
     return (
         <article className={`flex w-full flex-col rounded-xl  ${isComment ? "px-0 xs-px-7 mb-4" : "bg-dark-2 p-7"}`}>
             <div className="flex items-start justify-between">
@@ -106,19 +82,38 @@ export default function ThreadCard({id, currentUserId, parentId, content, create
                                     width={24} height={24}
                                     className="cursor-pointer object-contain"
                                 />
-
-                                {comments.length > 0 ? (
-                                    <Link href={`/thread/${id}`}>
-                                        <p className="mt-1 ml-1 text-subtle-medium text-gray-1">{comments.length}</p>
-                                    </Link>
-                                ): (
-                                    <>
-                                    </>
-                                )}
                             </div>
+
+                            {comments.length > 0 ? (
+                                <Link href={`/thread/${id}`}>
+                                    <p className="mt-1 ml-1 text-subtle-medium text-gray-1">{comments.length} replies</p>
+                                </Link>
+                            ): (
+                                <>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>
+
+                {/* TODO: Delete threads*/}
+                {/* TODO: Show comment logos*/}
+
+                {!isComment && community && (
+                    <Link href={`/communities/${community.id}`} className="mt-5 flex items-center">
+                        <p className="text-subtle-medium text-gray-1">
+                            {formatDateString(createdAt)} - {community.name} Community
+                        </p>
+
+                        <Image
+                            src={community.image}
+                            alt={community.name}
+                            width={14}
+                            height={14}
+                            className="ml-1 rounded-full object-cover"
+                        />
+                    </Link>
+                )}
             </div>
         </article>
     )
